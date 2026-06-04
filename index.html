@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>USDT Arbitrage</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #fff;
+      font-family: Arial;
+      text-align: center;
+      padding: 20px;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+    }
+
+    .box {
+      margin-top: 20px;
+      padding: 15px;
+      background: #1c1c1c;
+      border-radius: 10px;
+      display: inline-block;
+      text-align: left;
+      min-width: 350px;
+    }
+
+    .good { color: #00ff88; }
+    .bad { color: #ff4d4d; }
+  </style>
+</head>
+
+<body>
+
+  <h2>🔍 USDT Arbitrage Monitor</h2>
+
+  <input id="inv" value="20000000" />
+  <button onclick="loadData()">Check</button>
+
+  <div class="box" id="out">Loading...</div>
+
+  <script>
+    async function loadData(){
+
+      const inv = Number(document.getElementById("inv").value);
+
+      const res = await fetch("http://localhost:3000/all");
+      const data = await res.json();
+
+      if(!data){
+        document.getElementById("out").innerHTML = "No data";
+        return;
+      }
+
+      const list = Object.entries(data);
+
+      const minAsk = list.reduce((a,b)=> a[1].best_ask < b[1].best_ask ? a : b);
+      const maxBid = list.reduce((a,b)=> a[1].best_bid > b[1].best_bid ? a : b);
+
+      const spread = maxBid[1].best_bid - minAsk[1].best_ask;
+      const profit = (inv / minAsk[1].best_ask) * spread;
+
+      document.getElementById("out").innerHTML = `
+        <p>🟢 Buy: <b>${minAsk[0]}</b> @ ${minAsk[1].best_ask}</p>
+        <p>🔴 Sell: <b>${maxBid[0]}</b> @ ${maxBid[1].best_bid}</p>
+
+        <hr>
+
+        <p class="good">Spread: ${spread.toFixed(2)}</p>
+        <p class="good">Estimated Profit: ${profit.toFixed(0)} Toman</p>
+      `;
+    }
+
+    loadData();
+  </script>
+
+</body>
+</html>
