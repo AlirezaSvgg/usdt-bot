@@ -1,81 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>USDT Arbitrage</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔥 داشبورد آربیتراژ USDT</title>
   <style>
     body {
-      background: #0f0f0f;
-      color: #fff;
-      font-family: Arial;
+      font-family: Tahoma, sans-serif;
+      background-color: #121212;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #1e1e1e;
+      width: 100%;
+      padding: 1rem;
       text-align: center;
-      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
     }
-
-    input, button {
-      padding: 10px;
-      margin: 10px;
-      font-size: 16px;
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: #ffcc00;
     }
-
-    .box {
-      margin-top: 20px;
-      padding: 15px;
-      background: #1c1c1c;
-      border-radius: 10px;
-      display: inline-block;
-      text-align: left;
-      min-width: 350px;
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 700px;
+      padding: 2rem;
+      box-sizing: border-box;
     }
-
-    .good { color: #00ff88; }
-    .bad { color: #ff4d4d; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    table, th, td {
+      border: 1px solid #333;
+    }
+    th, td {
+      padding: 0.8rem;
+      text-align: center;
+    }
+    th {
+      background-color: #1f1f1f;
+      color: #ffcc00;
+    }
+    td {
+      background-color: #1a1a1a;
+    }
+    .profit {
+      color: #4caf50;
+      font-weight: bold;
+    }
+    .loss {
+      color: #f44336;
+      font-weight: bold;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
   </style>
 </head>
-
 <body>
-
-  <h2>🔍 USDT Arbitrage Monitor</h2>
-
-  <input id="inv" value="20000000" />
-  <button onclick="loadData()">Check</button>
-
-  <div class="box" id="out">Loading...</div>
+  <header>
+    <h1>🔥 داشبورد آربیتراژ USDT</h1>
+  </header>
+  <main>
+    <p>در حال بارگذاری داده‌ها...</p>
+    <table id="arb-table" style="display:none;">
+      <thead>
+        <tr>
+          <th>صرافی</th>
+          <th>خرید (ASK)</th>
+          <th>فروش (BID)</th>
+          <th>کارمزد</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- اینجا ردیف‌ها توسط جاوااسکریپت اضافه می‌شوند -->
+      </tbody>
+    </table>
+    <p id="summary" style="margin-top:1rem;"></p>
+  </main>
+  <footer>
+    ⏰ آخرین بروزرسانی: <span id="time">—</span>
+  </footer>
 
   <script>
-    async function loadData(){
+    async function fetchData() {
+      // نمونه داده (بعداً API واقعی میاد اینجا)
+      const data = {
+        "Nobitex": {"best_bid":173488,"best_ask":173492,"fee":0.25},
+        "Wallex": {"best_bid":173500,"best_ask":173510,"fee":0.3},
+        "Bitpin": {"best_bid":173480,"best_ask":173490,"fee":0.35},
+        "OMPFinex": {"best_bid":173495,"best_ask":173505,"fee":0.35},
+        "Abantether": {"best_bid":173485,"best_ask":173495,"fee":0.3}
+      };
 
-      const inv = Number(document.getElementById("inv").value);
+      const table = document.getElementById('arb-table');
+      const tbody = table.querySelector('tbody');
+      tbody.innerHTML = '';
 
-      const res = await fetch("http://localhost:3000/all");
-      const data = await res.json();
+      let minAsk = Infinity, maxBid = 0, buyEx='', sellEx='';
 
-      if(!data){
-        document.getElementById("out").innerHTML = "No data";
-        return;
+      for (let ex in data) {
+        const row = document.createElement('tr');
+        const bid = data[ex].best_bid;
+        const ask = data[ex].best_ask;
+        const fee = data[ex].fee;
+
+        row.innerHTML = `<td>${ex}</td>
+                         <td>${ask.toLocaleString()} تومان</td>
+                         <td>${bid.toLocaleString()} تومان</td>
+                         <td>${fee}%</td>`;
+        tbody.appendChild(row);
+
+        if (ask < minAsk) { minAsk = ask; buyEx = ex; }
+        if (bid > maxBid) { maxBid = bid; sellEx = ex; }
       }
 
-      const list = Object.entries(data);
+      table.style.display = 'table';
 
-      const minAsk = list.reduce((a,b)=> a[1].best_ask < b[1].best_ask ? a : b);
-      const maxBid = list.reduce((a,b)=> a[1].best_bid > b[1].best_bid ? a : b);
+      const diff = maxBid - minAsk;
+      const diffPct = (diff / minAsk * 100).toFixed(2);
+      const summary = document.getElementById('summary');
+      summary.innerHTML = `🟢 خرید از ${buyEx} | 🔴 فروش در ${sellEx} | 💰 اختلاف: ${diff.toLocaleString()} تومان (${diffPct}%)`;
 
-      const spread = maxBid[1].best_bid - minAsk[1].best_ask;
-      const profit = (inv / minAsk[1].best_ask) * spread;
-
-      document.getElementById("out").innerHTML = `
-        <p>🟢 Buy: <b>${minAsk[0]}</b> @ ${minAsk[1].best_ask}</p>
-        <p>🔴 Sell: <b>${maxBid[0]}</b> @ ${maxBid[1].best_bid}</p>
-
-        <hr>
-
-        <p class="good">Spread: ${spread.toFixed(2)}</p>
-        <p class="good">Estimated Profit: ${profit.toFixed(0)} Toman</p>
-      `;
+      document.getElementById('time').textContent = new Date().toLocaleTimeString();
     }
 
-    loadData();
+    fetchData();
+    setInterval(fetchData, 10000); // هر 10 ثانیه آپدیت
   </script>
-
 </body>
 </html>
