@@ -5,416 +5,408 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>💎 آربیتراژ تتر | USDT Arbitrage</title>
     
-    <!-- Telegram Web App -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
     <style>
         :root {
-            --tg-theme-bg: #0f172a;
-            --tg-theme-text: #e2e8f0;
-            --tg-theme-hint: #94a3b8;
-            --tg-theme-link: #3b82f6;
-            --tg-theme-button: #10b981;
-            --tg-theme-button-text: #ffffff;
-            --tg-theme-secondary-bg: #1e293b;
-            
-            --card-bg: #1e293b;
+            --bg: #0f172a;
+            --card: #1e293b;
             --border: #334155;
+            --text: #e2e8f0;
+            --hint: #94a3b8;
             --green: #10b981;
             --red: #ef4444;
             --yellow: #f59e0b;
             --blue: #3b82f6;
-            --radius: 16px;
+            --purple: #8b5cf6;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--tg-theme-bg);
-            color: var(--tg-theme-text);
+            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            padding: 16px;
-            padding-bottom: 32px;
+            padding: 12px;
+            padding-bottom: 40px;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
 
-        /* ==================== HEADER ==================== */
+        .container { max-width: 480px; margin: 0 auto; }
+
+        /* Header */
         .header {
             text-align: center;
             padding: 24px 0 16px;
+            position: relative;
+        }
+
+        .header-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--green);
+            margin-bottom: 12px;
         }
 
         .header-icon {
-            font-size: 48px;
+            font-size: 56px;
+            display: block;
             margin-bottom: 8px;
             animation: float 3s ease-in-out infinite;
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-8px); }
         }
 
         .header h1 {
-            font-size: 24px;
-            font-weight: 800;
+            font-size: 26px;
+            font-weight: 900;
             background: linear-gradient(135deg, #3b82f6, #10b981);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            margin-bottom: 4px;
         }
 
         .header p {
-            color: var(--tg-theme-hint);
-            font-size: 14px;
-            margin-top: 4px;
+            font-size: 13px;
+            color: var(--hint);
         }
 
-        /* ==================== INVESTMENT INPUT ==================== */
-        .input-section {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 12px;
+        /* Investment Card */
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 10px;
             border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
         }
 
-        .input-label {
+        .card-label {
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 13px;
+            color: var(--hint);
             margin-bottom: 12px;
-            font-size: 14px;
-            color: var(--tg-theme-hint);
         }
 
-        .input-label .icon {
-            font-size: 20px;
-        }
+        .card-label .emoji { font-size: 18px; }
 
-        .input-wrapper {
+        .input-row {
             display: flex;
             gap: 8px;
-        }
-
-        .input-wrapper input {
-            flex: 1;
-            padding: 14px 16px;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 12px;
-            border: 2px solid var(--border);
-            background: var(--tg-theme-bg);
-            color: var(--tg-theme-text);
-            transition: all 0.3s;
-            outline: none;
-        }
-
-        .input-wrapper input:focus {
-            border-color: var(--blue);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .input-wrapper input::placeholder {
-            color: var(--tg-theme-hint);
-            font-weight: 400;
-        }
-
-        .currency-badge {
-            display: flex;
             align-items: center;
-            padding: 12px 16px;
-            background: var(--tg-theme-bg);
-            border-radius: 12px;
+        }
+
+        .input-row input {
+            flex: 1;
+            padding: 16px;
+            font-size: 22px;
+            font-weight: 800;
+            border-radius: 14px;
             border: 2px solid var(--border);
-            font-weight: 600;
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+            text-align: center;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+
+        .input-row input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .currency {
+            padding: 14px 18px;
+            background: var(--bg);
+            border-radius: 14px;
+            border: 2px solid var(--border);
+            font-weight: 700;
             font-size: 14px;
+            color: var(--hint);
             white-space: nowrap;
         }
 
         .quick-amounts {
             display: flex;
-            gap: 8px;
-            margin-top: 12px;
+            gap: 6px;
+            margin-top: 14px;
             flex-wrap: wrap;
         }
 
-        .quick-amount {
-            padding: 8px 16px;
-            background: var(--tg-theme-bg);
+        .quick-btn {
+            flex: 1;
+            min-width: 60px;
+            padding: 10px 6px;
+            background: var(--bg);
             border: 1px solid var(--border);
-            border-radius: 20px;
-            font-size: 13px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--hint);
             cursor: pointer;
-            transition: all 0.3s;
-            color: var(--tg-theme-hint);
+            transition: all 0.2s;
+            text-align: center;
         }
 
-        .quick-amount:active {
+        .quick-btn:active {
             background: var(--blue);
             color: white;
             border-color: var(--blue);
+            transform: scale(0.95);
         }
 
-        /* ==================== BUTTON ==================== */
-        .calculate-btn {
+        /* Main Button */
+        .btn-main {
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #10b981, #059669);
+            padding: 18px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white;
             border: none;
-            border-radius: var(--radius);
-            font-size: 18px;
+            border-radius: 16px;
+            font-size: 17px;
             font-weight: 700;
             cursor: pointer;
+            margin-bottom: 12px;
             transition: all 0.3s;
-            margin-bottom: 16px;
-            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .calculate-btn:active {
-            transform: scale(0.98);
-            opacity: 0.9;
+        .btn-main:active {
+            transform: scale(0.97);
         }
 
-        .calculate-btn.loading {
-            background: var(--border);
+        .btn-main.loading {
+            background: var(--card);
+            color: var(--hint);
             pointer-events: none;
         }
 
-        /* ==================== STATUS ==================== */
-        .status-bar {
+        .btn-main .pulse {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.1);
+            animation: btnPulse 2s infinite;
+        }
+
+        @keyframes btnPulse {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* Status */
+        .status {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 16px;
-            padding: 10px 16px;
-            background: var(--card-bg);
-            border-radius: 12px;
-            font-size: 13px;
-            color: var(--tg-theme-hint);
+            padding: 8px 14px;
+            font-size: 12px;
+            color: var(--hint);
+            margin-bottom: 8px;
         }
 
         .status-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: var(--yellow);
-            animation: pulse 2s infinite;
-        }
-
-        .status-dot.online {
             background: var(--green);
+            animation: dotPulse 2s infinite;
         }
 
-        .status-dot.offline {
-            background: var(--red);
+        @keyframes dotPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.5); }
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
-        /* ==================== RESULT CARDS ==================== */
-        .result-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 12px;
-            border: 1px solid var(--border);
-            animation: slideUp 0.4s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .exchange-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .exchange-row:last-child {
-            border-bottom: none;
-        }
-
-        .exchange-label {
-            font-size: 14px;
-            color: var(--tg-theme-hint);
-        }
-
-        .exchange-name {
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        .exchange-price {
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        .price-buy { color: var(--green); }
-        .price-sell { color: var(--red); }
-
-        /* ==================== ARBITRAGE HIGHLIGHT ==================== */
-        .arbitrage-highlight {
+        /* Arbitrage Result */
+        .arbitrage-banner {
             background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
-            border: 2px solid rgba(16, 185, 129, 0.3);
-            border-radius: var(--radius);
+            border: 2px solid rgba(16, 185, 129, 0.2);
+            border-radius: 20px;
             padding: 20px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .arbitrage-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
-        .arbitrage-grid {
+        .arb-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
+            gap: 10px;
+            margin-bottom: 14px;
         }
 
-        .arb-card-mini {
+        .arb-mini {
             padding: 14px;
-            border-radius: 12px;
+            border-radius: 14px;
             text-align: center;
+            transition: transform 0.3s;
         }
 
-        .arb-card-mini.buy {
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+        .arb-mini.buy {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
         }
 
-        .arb-card-mini.sell {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+        .arb-mini.sell {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
         }
 
-        .arb-card-label {
-            font-size: 12px;
+        .arb-mini-label {
+            font-size: 11px;
+            color: var(--hint);
             margin-bottom: 6px;
-            color: var(--tg-theme-hint);
         }
 
-        .arb-card-exchange {
-            font-size: 16px;
-            font-weight: 700;
+        .arb-mini-exchange {
+            font-size: 15px;
+            font-weight: 800;
             margin-bottom: 4px;
         }
 
-        .arb-card-price {
-            font-size: 18px;
-            font-weight: 800;
+        .arb-mini-price {
+            font-size: 20px;
+            font-weight: 900;
         }
 
-        /* ==================== PROFIT ==================== */
-        .profit-section {
-            background: var(--card-bg);
-            border-radius: var(--radius);
+        .arb-mini-fee {
+            font-size: 10px;
+            color: var(--hint);
+            margin-top: 4px;
+        }
+
+        .spread-bar {
+            text-align: center;
+            padding: 12px;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .spread-label {
+            font-size: 11px;
+            color: var(--hint);
+            margin-bottom: 2px;
+        }
+
+        .spread-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--yellow);
+        }
+
+        .spread-pct {
+            font-size: 13px;
+            color: var(--yellow);
+            margin-top: 2px;
+        }
+
+        /* Profit Card */
+        .profit-card {
+            background: var(--card);
+            border-radius: 20px;
             padding: 20px;
             border: 1px solid var(--border);
+            margin-bottom: 10px;
         }
 
         .profit-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
-        .profit-grid {
-            display: grid;
-            gap: 12px;
-        }
-
-        .profit-item {
+        .profit-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px 0;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
         }
 
-        .profit-item:last-child {
-            border-bottom: none;
-        }
+        .profit-row:last-of-type { border-bottom: none; }
 
-        .profit-label {
-            font-size: 14px;
-            color: var(--tg-theme-hint);
-        }
+        .profit-label { font-size: 13px; color: var(--hint); }
+        .profit-value { font-weight: 600; font-size: 14px; }
 
-        .profit-value {
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        .profit-net {
-            background: rgba(16, 185, 129, 0.1);
-            padding: 16px;
-            border-radius: 12px;
-            margin-top: 12px;
+        .profit-highlight {
+            margin-top: 14px;
+            padding: 18px;
+            border-radius: 16px;
             text-align: center;
+            animation: popIn 0.5s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .profit-highlight.positive {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05));
             border: 1px solid rgba(16, 185, 129, 0.3);
         }
 
-        .profit-net-label {
-            font-size: 14px;
-            color: var(--tg-theme-hint);
+        .profit-highlight.negative {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.05));
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .profit-highlight-label {
+            font-size: 12px;
+            color: var(--hint);
             margin-bottom: 4px;
         }
 
-        .profit-net-value {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--green);
+        .profit-highlight-value {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: -1px;
         }
 
-        .profit-net-percent {
-            font-size: 14px;
-            color: var(--green);
+        .profit-highlight-pct {
+            font-size: 15px;
             margin-top: 4px;
+            font-weight: 600;
         }
 
-        .profit-negative {
-            color: var(--red) !important;
-        }
+        .green-text { color: var(--green); }
+        .red-text { color: var(--red); }
+        .yellow-text { color: var(--yellow); }
 
-        /* ==================== EXCHANGES TABLE ==================== */
-        .exchanges-section {
-            margin-top: 16px;
-        }
-
-        .section-subtitle {
-            font-size: 14px;
-            color: var(--tg-theme-hint);
-            margin-bottom: 12px;
+        /* Exchanges Card */
+        .exchanges-title {
+            font-size: 13px;
+            color: var(--hint);
+            margin-bottom: 10px;
             padding: 0 4px;
         }
 
@@ -423,462 +415,429 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px 16px;
-            background: var(--card-bg);
-            border-radius: 12px;
-            margin-bottom: 8px;
+            background: var(--card);
+            border-radius: 14px;
+            margin-bottom: 6px;
             border: 1px solid var(--border);
         }
 
-        .exchange-item-left {
+        .ex-left {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .exchange-item-icon {
-            width: 36px;
-            height: 36px;
+        .ex-icon {
+            width: 32px;
+            height: 32px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
             font-size: 14px;
+            color: white;
         }
 
-        .exchange-item-name {
+        .ex-name {
             font-weight: 600;
-            font-size: 15px;
-        }
-
-        .exchange-item-prices {
-            text-align: right;
-        }
-
-        .exchange-item-bid {
             font-size: 14px;
+        }
+
+        .ex-prices {
+            text-align: left;
+            direction: ltr;
+        }
+
+        .ex-bid {
+            font-size: 13px;
             color: var(--red);
-            font-weight: 600;
+            font-weight: 700;
         }
 
-        .exchange-item-ask {
-            font-size: 14px;
+        .ex-ask {
+            font-size: 13px;
             color: var(--green);
-            font-weight: 600;
+            font-weight: 700;
         }
 
-        .exchange-item-fee {
-            font-size: 11px;
-            color: var(--tg-theme-hint);
+        .ex-fee {
+            font-size: 10px;
+            color: var(--hint);
         }
 
-        /* ==================== ERROR ==================== */
-        .error-card {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: var(--radius);
-            padding: 20px;
+        /* Loading */
+        .loading-container {
             text-align: center;
-        }
-
-        .error-icon {
-            font-size: 40px;
-            margin-bottom: 8px;
-        }
-
-        .error-message {
-            color: var(--red);
-            font-size: 14px;
-        }
-
-        /* ==================== LOADING ==================== */
-        .loading-spinner {
-            text-align: center;
-            padding: 40px;
+            padding: 40px 20px;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border: 3px solid var(--border);
             border-top-color: var(--blue);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin: 0 auto 12px;
+            margin: 0 auto 14px;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        /* ==================== FOOTER ==================== */
+        .loading-text {
+            font-size: 14px;
+            color: var(--hint);
+        }
+
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4) infinite;
+        }
+
+        @keyframes dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+        }
+
+        /* Error */
+        .error-card {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .error-emoji { font-size: 44px; margin-bottom: 8px; }
+        .error-text { color: var(--red); font-size: 14px; margin-bottom: 12px; }
+
+        .retry-btn {
+            padding: 10px 24px;
+            background: var(--red);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Footer */
         .footer {
             text-align: center;
-            padding: 24px 0 8px;
-            font-size: 12px;
-            color: var(--tg-theme-hint);
-        }
-
-        .footer-dot {
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            background: var(--green);
-            border-radius: 50%;
-            margin-right: 6px;
-        }
-
-        /* ==================== RESPONSIVE ==================== */
-        @media (min-width: 768px) {
-            body {
-                max-width: 600px;
-                margin: 0 auto;
-                padding: 24px;
-            }
-        }
-
-        /* هیدن اسکرول بار تلگرام */
-        ::-webkit-scrollbar {
-            width: 0;
+            padding: 20px 0 8px;
+            font-size: 11px;
+            color: var(--hint);
         }
     </style>
 </head>
 <body>
 
-    <!-- HEADER -->
-    <div class="header">
-        <div class="header-icon">💎</div>
-        <h1>USDT Arbitrage</h1>
-        <p>فرصت‌های آربیتراژ لحظه‌ای بین ۵ صرافی</p>
-    </div>
-
-    <!-- INVESTMENT INPUT -->
-    <div class="input-section">
-        <div class="input-label">
-            <span class="icon">💰</span>
-            <span>سرمایه (تومان)</span>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-badge">🟢 ۵ صرافی آنلاین</div>
+            <span class="header-icon">💎</span>
+            <h1>USDT Arbitrage</h1>
+            <p>پایش لحظه‌ای فرصت‌های آربیتراژ</p>
         </div>
-        <div class="input-wrapper">
-            <input 
-                type="text" 
-                id="investment" 
-                value="20,000,000" 
-                placeholder="مبلغ سرمایه..."
-                inputmode="numeric"
-            >
-            <div class="currency-badge">تومان</div>
+
+        <!-- Investment Input -->
+        <div class="card">
+            <div class="card-label">
+                <span class="emoji">💰</span>
+                <span>مبلغ سرمایه (تومان)</span>
+            </div>
+            <div class="input-row">
+                <input type="text" id="investment" value="20,000,000" inputmode="numeric">
+                <div class="currency">تومان</div>
+            </div>
+            <div class="quick-amounts">
+                <div class="quick-btn" onclick="setAmount(1000000)">۱M</div>
+                <div class="quick-btn" onclick="setAmount(5000000)">۵M</div>
+                <div class="quick-btn" onclick="setAmount(10000000)">۱۰M</div>
+                <div class="quick-btn" onclick="setAmount(20000000)">۲۰M</div>
+                <div class="quick-btn" onclick="setAmount(50000000)">۵۰M</div>
+            </div>
         </div>
-        <div class="quick-amounts">
-            <div class="quick-amount" onclick="setAmount(1000000)">۱ میلیون</div>
-            <div class="quick-amount" onclick="setAmount(5000000)">۵ میلیون</div>
-            <div class="quick-amount" onclick="setAmount(10000000)">۱۰ میلیون</div>
-            <div class="quick-amount" onclick="setAmount(20000000)">۲۰ میلیون</div>
-            <div class="quick-amount" onclick="setAmount(50000000)">۵۰ میلیون</div>
+
+        <!-- Main Button -->
+        <button class="btn-main" id="mainBtn" onclick="calculate()">
+            🔍 محاسبه آربیتراژ
+        </button>
+
+        <!-- Status -->
+        <div class="status" id="status" style="display: none;">
+            <div class="status-dot"></div>
+            <span id="statusText">آماده</span>
         </div>
-    </div>
 
-    <!-- CALCULATE BUTTON -->
-    <button class="calculate-btn" id="calcBtn" onclick="calculate()">
-        🔍 محاسبه آربیتراژ
-    </button>
+        <!-- Result Container -->
+        <div id="result"></div>
 
-    <!-- STATUS BAR -->
-    <div class="status-bar" id="statusBar" style="display: none;">
-        <div class="status-dot" id="statusDot"></div>
-        <span id="statusText">آماده</span>
-    </div>
-
-    <!-- RESULT CONTAINER -->
-    <div id="result"></div>
-
-    <!-- FOOTER -->
-    <div class="footer">
-        <span class="footer-dot"></span>
-        بروزرسانی لحظه‌ای | USDT Arbitrage Bot
+        <!-- Footer -->
+        <div class="footer">
+            ⚡ بروزرسانی لحظه‌ای | USDT Arbitrage Bot
+        </div>
     </div>
 
     <script>
         // ==================== CONFIG ====================
         const API_URL = "https://usdt-bot.alir3zaww.workers.dev/";
         
-        // ==================== TELEGRAM WEB APP ====================
-        const tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.ready();
-            tg.expand();
-            tg.setHeaderColor('#0f172a');
-            tg.setBackgroundColor('#0f172a');
+        // Exchange colors
+        const EXCHANGE_COLORS = {
+            'Nobitex': '#3b82f6',
+            'Wallex': '#8b5cf6',
+            'Bitpin': '#f59e0b',
+            'OMPFinex': '#ec4899',
+            'Abantether': '#10b981'
+        };
+
+        // ==================== HELPERS ====================
+        function formatNumber(num) {
+            if (num === undefined || num === null || isNaN(num)) return '---';
+            return Number(num).toLocaleString('en-US');
         }
 
-        // ==================== FORMAT NUMBER ====================
-        function formatNumber(num) {
-            if (num === undefined || num === null) return '---';
-            return Number(num).toLocaleString('en-US');
+        function formatInput(str) {
+            const num = parseFloat(str.replace(/,/g, ''));
+            if (isNaN(num)) return '';
+            return num.toLocaleString('en-US');
         }
 
         function parseAmount(str) {
             return parseFloat(str.replace(/,/g, '')) || 0;
         }
 
-        function formatInput(str) {
-            const num = parseAmount(str);
-            if (isNaN(num)) return '';
-            return num.toLocaleString('en-US');
-        }
-
-        // ==================== SET AMOUNT ====================
         function setAmount(amount) {
             document.getElementById('investment').value = amount.toLocaleString('en-US');
             calculate();
         }
 
-        // ==================== INPUT FORMATTING ====================
+        // Input formatting
         document.getElementById('investment').addEventListener('input', function(e) {
-            const cursor = this.selectionStart;
             const raw = this.value.replace(/,/g, '');
             if (raw === '' || isNaN(raw)) {
                 this.value = '';
                 return;
             }
-            const formatted = formatInput(raw);
-            this.value = formatted;
+            this.value = formatInput(raw);
         });
 
         // ==================== CALCULATE ====================
         async function calculate() {
-            const investmentInput = document.getElementById('investment');
-            const investment = parseAmount(investmentInput.value);
+            const investment = parseAmount(document.getElementById('investment').value);
             const resultDiv = document.getElementById('result');
-            const calcBtn = document.getElementById('calcBtn');
-            const statusBar = document.getElementById('statusBar');
-            const statusDot = document.getElementById('statusDot');
+            const mainBtn = document.getElementById('mainBtn');
+            const statusDiv = document.getElementById('status');
             const statusText = document.getElementById('statusText');
 
             // Validation
             if (!investment || investment < 100000) {
                 resultDiv.innerHTML = `
                     <div class="error-card">
-                        <div class="error-icon">⚠️</div>
-                        <div class="error-message">حداقل سرمایه ۱۰۰,۰۰۰ تومان</div>
+                        <div class="error-emoji">⚠️</div>
+                        <div class="error-text">حداقل سرمایه: ۱۰۰,۰۰۰ تومان</div>
                     </div>
                 `;
                 return;
             }
 
             // Loading state
-            calcBtn.classList.add('loading');
-            calcBtn.textContent = '⏳ در حال دریافت قیمت‌ها...';
-            statusBar.style.display = 'flex';
-            statusDot.className = 'status-dot';
+            mainBtn.classList.add('loading');
+            mainBtn.innerHTML = '⏳ <span class="loading-dots">در حال دریافت قیمت</span>';
+            statusDiv.style.display = 'flex';
             statusText.textContent = 'دریافت از صرافی‌ها...';
             
             resultDiv.innerHTML = `
-                <div class="loading-spinner">
+                <div class="loading-container">
                     <div class="spinner"></div>
-                    <div style="color: var(--tg-theme-hint); font-size: 14px;">دریافت قیمت از ۵ صرافی...</div>
+                    <div class="loading-text">دریافت قیمت از ۵ صرافی<span class="loading-dots"></span></div>
                 </div>
             `;
 
             try {
-                const response = await fetch(`${API_URL}?investment=${investment}`);
+                const url = `${API_URL}?investment=${investment}`;
                 
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 12000);
+                
+                const response = await fetch(url, {
+                    signal: controller.signal,
+                    headers: { 'Accept': 'application/json' }
+                });
+                
+                clearTimeout(timeout);
+
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    throw new Error(`خطای سرور (${response.status})`);
                 }
 
                 const data = await response.json();
 
-                // Validate response
+                // Validate response structure
                 if (!data || data.error) {
-                    throw new Error(data?.error || 'Invalid API response');
+                    throw new Error(data?.error || 'پاسخ نامعتبر از سرور');
                 }
 
-                if (!data.bestBuy || !data.bestSell) {
+                if (!data.bestBuy || !data.bestSell || !data.profit) {
                     throw new Error('داده‌های آربیتراژ ناقص است');
                 }
 
-                // Success state
-                statusDot.className = 'status-dot online';
+                // Success
                 statusText.textContent = `✅ بروزرسانی شد | ${new Date().toLocaleTimeString('fa-IR')}`;
-                calcBtn.classList.remove('loading');
-                calcBtn.textContent = '🔄 بروزرسانی مجدد';
-
-                // Render results
-                renderResults(data);
+                mainBtn.classList.remove('loading');
+                mainBtn.innerHTML = '🔄 بروزرسانی مجدد';
+                
+                renderResult(data);
 
             } catch (error) {
-                // Error state
-                statusDot.className = 'status-dot offline';
-                statusText.textContent = '❌ خطا در دریافت داده';
-                calcBtn.classList.remove('loading');
-                calcBtn.textContent = '🔄 تلاش مجدد';
-
+                console.error('Fetch error:', error);
+                
+                statusText.textContent = '❌ خطا در دریافت';
+                mainBtn.classList.remove('loading');
+                mainBtn.innerHTML = '🔄 تلاش مجدد';
+                
+                let errorMsg = error.message;
+                if (error.name === 'AbortError') {
+                    errorMsg = 'زمان درخواست به پایان رسید';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMsg = 'اتصال به سرور برقرار نشد';
+                }
+                
                 resultDiv.innerHTML = `
                     <div class="error-card">
-                        <div class="error-icon">🔴</div>
-                        <div class="error-message">${error.message}</div>
-                        <div style="margin-top: 12px; font-size: 12px; color: var(--tg-theme-hint);">
-                            اتصال اینترنت را بررسی کنید
-                        </div>
+                        <div class="error-emoji">🔴</div>
+                        <div class="error-text">${errorMsg}</div>
+                        <button class="retry-btn" onclick="calculate()">🔄 تلاش مجدد</button>
                     </div>
                 `;
-
-                console.error('API Error:', error);
             }
         }
 
-        // ==================== RENDER RESULTS ====================
-        function renderResults(data) {
-            const resultDiv = document.getElementById('result');
-            const { bestBuy, bestSell, spread, profit, exchanges } = data;
+        // ==================== RENDER ====================
+        function renderResult(data) {
+            const { bestBuy, bestSell, profit, exchanges, investment } = data;
+            
+            // Calculate spread (since API might not include it)
+            const spreadDiff = bestSell.price - bestBuy.price;
+            const spreadPct = ((spreadDiff / bestBuy.price) * 100).toFixed(2);
             
             const isProfitable = profit.net > 0;
-            const profitClass = isProfitable ? '' : 'profit-negative';
-
-            // Color coding for exchanges
-            const exchangeColors = {
-                'Nobitex': '#3b82f6',
-                'Wallex': '#8b5cf6',
-                'Bitpin': '#f59e0b',
-                'OMPFinex': '#ec4899',
-                'Abantether': '#10b981'
-            };
-
+            
             let exchangesHTML = '';
             if (exchanges) {
-                const exchangeNames = Object.keys(exchanges);
-                exchangesHTML = `
-                    <div class="exchanges-section">
-                        <div class="section-subtitle">📊 قیمت‌های لحظه‌ای</div>
-                        ${exchangeNames.map(name => {
-                            const ex = exchanges[name];
-                            const color = exchangeColors[name] || '#94a3b8';
-                            const firstLetter = name.charAt(0);
-                            return `
-                                <div class="exchange-item">
-                                    <div class="exchange-item-left">
-                                        <div class="exchange-item-icon" style="background: ${color}20; color: ${color};">
-                                            ${firstLetter}
-                                        </div>
-                                        <div class="exchange-item-name">${name}</div>
-                                    </div>
-                                    <div class="exchange-item-prices">
-                                        <div class="exchange-item-ask">
-                                            ${ex.ask ? formatNumber(ex.ask) : '---'} 
-                                            <span style="font-size: 10px;">خرید</span>
-                                        </div>
-                                        <div class="exchange-item-bid">
-                                            ${ex.bid ? formatNumber(ex.bid) : '---'} 
-                                            <span style="font-size: 10px;">فروش</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                `;
+                exchangesHTML = Object.entries(exchanges).map(([name, ex]) => {
+                    const color = EXCHANGE_COLORS[name] || '#94a3b8';
+                    const firstLetter = name.charAt(0);
+                    const fee = data.bestBuy.exchange === name ? data.bestBuy.fee : 
+                               data.bestSell.exchange === name ? data.bestSell.fee : 0;
+                    
+                    return `
+                        <div class="exchange-item">
+                            <div class="ex-left">
+                                <div class="ex-icon" style="background: ${color};">${firstLetter}</div>
+                                <div class="ex-name">${name}</div>
+                            </div>
+                            <div class="ex-prices">
+                                <div class="ex-ask">${formatNumber(ex.ask)} خرید</div>
+                                <div class="ex-bid">${formatNumber(ex.bid)} فروش</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             }
 
-            resultDiv.innerHTML = `
-                <!-- Arbitrage Highlight -->
-                <div class="arbitrage-highlight">
-                    <div class="arbitrage-title">
-                        🎯 بهترین فرصت آربیتراژ
-                    </div>
-                    <div class="arbitrage-grid">
-                        <div class="arb-card-mini buy">
-                            <div class="arb-card-label">🟢 خرید از</div>
-                            <div class="arb-card-exchange">${bestBuy.exchange}</div>
-                            <div class="arb-card-price price-buy">${formatNumber(bestBuy.price)}</div>
-                            <div style="font-size: 11px; color: var(--tg-theme-hint); margin-top: 4px;">
-                                کارمزد: ${(bestBuy.fee * 100).toFixed(2)}%
-                            </div>
+            document.getElementById('result').innerHTML = `
+                <!-- Arbitrage Banner -->
+                <div class="arbitrage-banner">
+                    <div class="arbitrage-title">🎯 بهترین فرصت آربیتراژ</div>
+                    
+                    <div class="arb-grid">
+                        <div class="arb-mini buy">
+                            <div class="arb-mini-label">🟢 خرید از</div>
+                            <div class="arb-mini-exchange">${bestBuy.exchange}</div>
+                            <div class="arb-mini-price green-text">${formatNumber(bestBuy.price)}</div>
+                            <div class="arb-mini-fee">کارمزد: %${(bestBuy.fee * 100).toFixed(2)}</div>
                         </div>
-                        <div class="arb-card-mini sell">
-                            <div class="arb-card-label">🔴 فروش به</div>
-                            <div class="arb-card-exchange">${bestSell.exchange}</div>
-                            <div class="arb-card-price price-sell">${formatNumber(bestSell.price)}</div>
-                            <div style="font-size: 11px; color: var(--tg-theme-hint); margin-top: 4px;">
-                                کارمزد: ${(bestSell.fee * 100).toFixed(2)}%
-                            </div>
+                        <div class="arb-mini sell">
+                            <div class="arb-mini-label">🔴 فروش به</div>
+                            <div class="arb-mini-exchange">${bestSell.exchange}</div>
+                            <div class="arb-mini-price red-text">${formatNumber(bestSell.price)}</div>
+                            <div class="arb-mini-fee">کارمزد: %${(bestSell.fee * 100).toFixed(2)}</div>
                         </div>
                     </div>
-
-                    <!-- Spread -->
-                    <div style="text-align: center; padding: 10px; background: rgba(245, 158, 11, 0.1); border-radius: 10px;">
-                        <span style="font-size: 13px; color: var(--tg-theme-hint);">اختلاف قیمت:</span>
-                        <span style="font-size: 18px; font-weight: 700; color: var(--yellow); margin: 0 8px;">
-                            ${formatNumber(spread.diff)}
-                        </span>
-                        <span style="font-size: 14px; color: var(--yellow);">
-                            (%${spread.diffPct})
-                        </span>
+                    
+                    <div class="spread-bar">
+                        <div class="spread-label">اختلاف قیمت</div>
+                        <div class="spread-value">${formatNumber(spreadDiff)} تومان</div>
+                        <div class="spread-pct">(%${spreadPct} به ازای هر USDT)</div>
                     </div>
                 </div>
 
-                <!-- Profit Section -->
-                <div class="profit-section">
-                    <div class="profit-title">
-                        💵 محاسبه سود
+                <!-- Profit Card -->
+                <div class="profit-card">
+                    <div class="profit-title">💵 محاسبه سود و هزینه</div>
+                    
+                    <div class="profit-row">
+                        <span class="profit-label">💰 سرمایه</span>
+                        <span class="profit-value">${formatNumber(investment)} تومان</span>
                     </div>
-                    <div class="profit-grid">
-                        <div class="profit-item">
-                            <span class="profit-label">سرمایه</span>
-                            <span class="profit-value">${formatNumber(data.investment)} تومان</span>
+                    
+                    <div class="profit-row">
+                        <span class="profit-label">📈 سود ناخالص</span>
+                        <span class="profit-value yellow-text">${formatNumber(Math.round(profit.gross))} تومان</span>
+                    </div>
+                    
+                    <div class="profit-row">
+                        <span class="profit-label">🧾 کارمزد کل</span>
+                        <span class="profit-value red-text">${formatNumber(Math.round(profit.fees))} تومان</span>
+                    </div>
+                    
+                    <div class="profit-highlight ${isProfitable ? 'positive' : 'negative'}">
+                        <div class="profit-highlight-label">
+                            ${isProfitable ? '🟢 سود خالص' : '🔴 ضرر خالص'}
                         </div>
-                        <div class="profit-item">
-                            <span class="profit-label">سود ناخالص</span>
-                            <span class="profit-value" style="color: var(--yellow);">
-                                ${formatNumber(profit.gross)} تومان
-                            </span>
+                        <div class="profit-highlight-value ${isProfitable ? 'green-text' : 'red-text'}">
+                            ${formatNumber(Math.abs(Math.round(profit.net)))} تومان
                         </div>
-                        <div class="profit-item">
-                            <span class="profit-label">مجموع کارمزدها</span>
-                            <span class="profit-value" style="color: var(--red);">
-                                ${formatNumber(profit.fees)} تومان
-                            </span>
-                        </div>
-                        <div class="profit-net ${profitClass}">
-                            <div class="profit-net-label">
-                                ${isProfitable ? '🟢 سود خالص' : '🔴 ضرر خالص'}
-                            </div>
-                            <div class="profit-net-value">
-                                ${formatNumber(Math.abs(profit.net))} تومان
-                            </div>
-                            <div class="profit-net-percent">
-                                ${isProfitable ? '+' : ''}%${profit.netPercent}
-                            </div>
+                        <div class="profit-highlight-pct ${isProfitable ? 'green-text' : 'red-text'}">
+                            ${isProfitable ? '+' : ''}%${profit.netPercent.toFixed(3)}
                         </div>
                     </div>
                 </div>
 
-                <!-- Exchanges Table -->
+                <!-- Exchanges List -->
+                <div class="exchanges-title">📊 قیمت‌های لحظه‌ای</div>
                 ${exchangesHTML}
 
-                <!-- Timestamp -->
-                <div style="text-align: center; margin-top: 16px; font-size: 11px; color: var(--tg-theme-hint);">
+                <div style="text-align: center; margin-top: 12px; font-size: 11px; color: var(--hint);">
                     ⏰ ${new Date().toLocaleTimeString('fa-IR')}
                 </div>
             `;
 
-            // Scroll to result
-            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Scroll to top of result
+            document.querySelector('.arbitrage-banner')?.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
         }
 
         // ==================== INIT ====================
         function init() {
-            // Auto-calculate on load
-            calculate();
+            // Auto calculate on load
+            setTimeout(calculate, 600);
             
-            // Telegram Main Button
-            if (tg?.MainButton) {
-                tg.MainButton.setText('🔄 بروزرسانی');
-                tg.MainButton.show();
-                tg.MainButton.onClick(calculate);
-            }
+            // Allow Enter key to calculate
+            document.getElementById('investment').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') calculate();
+            });
         }
 
-        // Start app
         init();
     </script>
 </body>
