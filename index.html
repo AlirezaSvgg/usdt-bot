@@ -1,124 +1,885 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>USDT Arbitrage Mini App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>💎 آربیتراژ تتر | USDT Arbitrage</title>
+    
+    <!-- Telegram Web App -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <style>
+        :root {
+            --tg-theme-bg: #0f172a;
+            --tg-theme-text: #e2e8f0;
+            --tg-theme-hint: #94a3b8;
+            --tg-theme-link: #3b82f6;
+            --tg-theme-button: #10b981;
+            --tg-theme-button-text: #ffffff;
+            --tg-theme-secondary-bg: #1e293b;
+            
+            --card-bg: #1e293b;
+            --border: #334155;
+            --green: #10b981;
+            --red: #ef4444;
+            --yellow: #f59e0b;
+            --blue: #3b82f6;
+            --radius: 16px;
+        }
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: #0f0f0f;
-      color: #fff;
-      padding: 16px;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .card {
-      background: #1c1c1c;
-      padding: 12px;
-      border-radius: 10px;
-      margin-top: 12px;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--tg-theme-bg);
+            color: var(--tg-theme-text);
+            min-height: 100vh;
+            padding: 16px;
+            padding-bottom: 32px;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
 
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-    }
+        /* ==================== HEADER ==================== */
+        .header {
+            text-align: center;
+            padding: 24px 0 16px;
+        }
 
-    button {
-      background: #2ecc71;
-      font-weight: bold;
-      cursor: pointer;
-    }
+        .header-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+            animation: float 3s ease-in-out infinite;
+        }
 
-    .row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 6px;
-    }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
 
-    .green { color: #2ecc71; }
-    .red { color: #ff4d4d; }
-    .muted { color: #aaa; }
-  </style>
+        .header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--tg-theme-hint);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* ==================== INVESTMENT INPUT ==================== */
+        .input-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .input-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: var(--tg-theme-hint);
+        }
+
+        .input-label .icon {
+            font-size: 20px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 8px;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            padding: 14px 16px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            background: var(--tg-theme-bg);
+            color: var(--tg-theme-text);
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-wrapper input::placeholder {
+            color: var(--tg-theme-hint);
+            font-weight: 400;
+        }
+
+        .currency-badge {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--tg-theme-bg);
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            font-weight: 600;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .quick-amounts {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .quick-amount {
+            padding: 8px 16px;
+            background: var(--tg-theme-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--tg-theme-hint);
+        }
+
+        .quick-amount:active {
+            background: var(--blue);
+            color: white;
+            border-color: var(--blue);
+        }
+
+        /* ==================== BUTTON ==================== */
+        .calculate-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .calculate-btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .calculate-btn.loading {
+            background: var(--border);
+            pointer-events: none;
+        }
+
+        /* ==================== STATUS ==================== */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding: 10px 16px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            font-size: 13px;
+            color: var(--tg-theme-hint);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--yellow);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.online {
+            background: var(--green);
+        }
+
+        .status-dot.offline {
+            background: var(--red);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* ==================== RESULT CARDS ==================== */
+        .result-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .exchange-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .exchange-row:last-child {
+            border-bottom: none;
+        }
+
+        .exchange-label {
+            font-size: 14px;
+            color: var(--tg-theme-hint);
+        }
+
+        .exchange-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .exchange-price {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .price-buy { color: var(--green); }
+        .price-sell { color: var(--red); }
+
+        /* ==================== ARBITRAGE HIGHLIGHT ==================== */
+        .arbitrage-highlight {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 12px;
+        }
+
+        .arbitrage-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .arbitrage-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .arb-card-mini {
+            padding: 14px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .arb-card-mini.buy {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .arb-card-mini.sell {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .arb-card-label {
+            font-size: 12px;
+            margin-bottom: 6px;
+            color: var(--tg-theme-hint);
+        }
+
+        .arb-card-exchange {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .arb-card-price {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        /* ==================== PROFIT ==================== */
+        .profit-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .profit-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .profit-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .profit-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profit-item:last-child {
+            border-bottom: none;
+        }
+
+        .profit-label {
+            font-size: 14px;
+            color: var(--tg-theme-hint);
+        }
+
+        .profit-value {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .profit-net {
+            background: rgba(16, 185, 129, 0.1);
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 12px;
+            text-align: center;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .profit-net-label {
+            font-size: 14px;
+            color: var(--tg-theme-hint);
+            margin-bottom: 4px;
+        }
+
+        .profit-net-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--green);
+        }
+
+        .profit-net-percent {
+            font-size: 14px;
+            color: var(--green);
+            margin-top: 4px;
+        }
+
+        .profit-negative {
+            color: var(--red) !important;
+        }
+
+        /* ==================== EXCHANGES TABLE ==================== */
+        .exchanges-section {
+            margin-top: 16px;
+        }
+
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--tg-theme-hint);
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+
+        .exchange-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .exchange-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exchange-item-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .exchange-item-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .exchange-item-prices {
+            text-align: right;
+        }
+
+        .exchange-item-bid {
+            font-size: 14px;
+            color: var(--red);
+            font-weight: 600;
+        }
+
+        .exchange-item-ask {
+            font-size: 14px;
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .exchange-item-fee {
+            font-size: 11px;
+            color: var(--tg-theme-hint);
+        }
+
+        /* ==================== ERROR ==================== */
+        .error-card {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .error-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .error-message {
+            color: var(--red);
+            font-size: 14px;
+        }
+
+        /* ==================== LOADING ==================== */
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==================== FOOTER ==================== */
+        .footer {
+            text-align: center;
+            padding: 24px 0 8px;
+            font-size: 12px;
+            color: var(--tg-theme-hint);
+        }
+
+        .footer-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--green);
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (min-width: 768px) {
+            body {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 24px;
+            }
+        }
+
+        /* هیدن اسکرول بار تلگرام */
+        ::-webkit-scrollbar {
+            width: 0;
+        }
+    </style>
 </head>
-
 <body>
 
-<h2>🔍 USDT Arbitrage</h2>
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-icon">💎</div>
+        <h1>USDT Arbitrage</h1>
+        <p>فرصت‌های آربیتراژ لحظه‌ای بین ۵ صرافی</p>
+    </div>
 
-<input id="inv" type="number" value="20000000">
-<button onclick="calc()">CALCULATE</button>
+    <!-- INVESTMENT INPUT -->
+    <div class="input-section">
+        <div class="input-label">
+            <span class="icon">💰</span>
+            <span>سرمایه (تومان)</span>
+        </div>
+        <div class="input-wrapper">
+            <input 
+                type="text" 
+                id="investment" 
+                value="20,000,000" 
+                placeholder="مبلغ سرمایه..."
+                inputmode="numeric"
+            >
+            <div class="currency-badge">تومان</div>
+        </div>
+        <div class="quick-amounts">
+            <div class="quick-amount" onclick="setAmount(1000000)">۱ میلیون</div>
+            <div class="quick-amount" onclick="setAmount(5000000)">۵ میلیون</div>
+            <div class="quick-amount" onclick="setAmount(10000000)">۱۰ میلیون</div>
+            <div class="quick-amount" onclick="setAmount(20000000)">۲۰ میلیون</div>
+            <div class="quick-amount" onclick="setAmount(50000000)">۵۰ میلیون</div>
+        </div>
+    </div>
 
-<div id="out" class="card">
-  <div class="muted">Waiting...</div>
-</div>
+    <!-- CALCULATE BUTTON -->
+    <button class="calculate-btn" id="calcBtn" onclick="calculate()">
+        🔍 محاسبه آربیتراژ
+    </button>
 
-<script>
-const API = "https://usdt-bot.alir3zaww.workers.dev/";
+    <!-- STATUS BAR -->
+    <div class="status-bar" id="statusBar" style="display: none;">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">آماده</span>
+    </div>
 
-async function calc() {
-  const out = document.getElementById("out");
-  const inv = document.getElementById("inv").value;
+    <!-- RESULT CONTAINER -->
+    <div id="result"></div>
 
-  out.innerHTML = `<div class="muted">Loading...</div>`;
+    <!-- FOOTER -->
+    <div class="footer">
+        <span class="footer-dot"></span>
+        بروزرسانی لحظه‌ای | USDT Arbitrage Bot
+    </div>
 
-  try {
-    const res = await fetch(`${API}?investment=${inv}`);
-    const data = await res.json();
+    <script>
+        // ==================== CONFIG ====================
+        const API_URL = "https://usdt-bot.alir3zaww.workers.dev/";
+        
+        // ==================== TELEGRAM WEB APP ====================
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.setHeaderColor('#0f172a');
+            tg.setBackgroundColor('#0f172a');
+        }
 
-    if (!data.bestBuy || !data.bestSell || !data.profit) {
-      out.innerHTML = `<div class="red">Invalid API response</div>`;
-      return;
-    }
+        // ==================== FORMAT NUMBER ====================
+        function formatNumber(num) {
+            if (num === undefined || num === null) return '---';
+            return Number(num).toLocaleString('en-US');
+        }
 
-    out.innerHTML = `
-      <div class="row">
-        <span>Best Buy</span>
-        <span class="green">${data.bestBuy.exchange} @ ${data.bestBuy.price}</span>
-      </div>
+        function parseAmount(str) {
+            return parseFloat(str.replace(/,/g, '')) || 0;
+        }
 
-      <div class="row">
-        <span>Best Sell</span>
-        <span class="red">${data.bestSell.exchange} @ ${data.bestSell.price}</span>
-      </div>
+        function formatInput(str) {
+            const num = parseAmount(str);
+            if (isNaN(num)) return '';
+            return num.toLocaleString('en-US');
+        }
 
-      <div class="row">
-        <span>Spread</span>
-        <span>${data.spread.diff} (${data.spread.diffPct.toFixed(2)}%)</span>
-      </div>
+        // ==================== SET AMOUNT ====================
+        function setAmount(amount) {
+            document.getElementById('investment').value = amount.toLocaleString('en-US');
+            calculate();
+        }
 
-      <div class="row">
-        <span>Gross</span>
-        <span>${Math.round(data.profit.gross)}</span>
-      </div>
+        // ==================== INPUT FORMATTING ====================
+        document.getElementById('investment').addEventListener('input', function(e) {
+            const cursor = this.selectionStart;
+            const raw = this.value.replace(/,/g, '');
+            if (raw === '' || isNaN(raw)) {
+                this.value = '';
+                return;
+            }
+            const formatted = formatInput(raw);
+            this.value = formatted;
+        });
 
-      <div class="row">
-        <span>Fees</span>
-        <span>${Math.round(data.profit.fees)}</span>
-      </div>
+        // ==================== CALCULATE ====================
+        async function calculate() {
+            const investmentInput = document.getElementById('investment');
+            const investment = parseAmount(investmentInput.value);
+            const resultDiv = document.getElementById('result');
+            const calcBtn = document.getElementById('calcBtn');
+            const statusBar = document.getElementById('statusBar');
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
 
-      <div class="row">
-        <span class="green">Net Profit</span>
-        <span class="green">${Math.round(data.profit.net)}</span>
-      </div>
+            // Validation
+            if (!investment || investment < 100000) {
+                resultDiv.innerHTML = `
+                    <div class="error-card">
+                        <div class="error-icon">⚠️</div>
+                        <div class="error-message">حداقل سرمایه ۱۰۰,۰۰۰ تومان</div>
+                    </div>
+                `;
+                return;
+            }
 
-      <div class="row">
-        <span>ROI</span>
-        <span class="green">${data.profit.netPercent.toFixed(3)}%</span>
-      </div>
-    `;
+            // Loading state
+            calcBtn.classList.add('loading');
+            calcBtn.textContent = '⏳ در حال دریافت قیمت‌ها...';
+            statusBar.style.display = 'flex';
+            statusDot.className = 'status-dot';
+            statusText.textContent = 'دریافت از صرافی‌ها...';
+            
+            resultDiv.innerHTML = `
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <div style="color: var(--tg-theme-hint); font-size: 14px;">دریافت قیمت از ۵ صرافی...</div>
+                </div>
+            `;
 
-  } catch (e) {
-    out.innerHTML = `<div class="red">Fetch Error</div>`;
-  }
-}
-</script>
+            try {
+                const response = await fetch(`${API_URL}?investment=${investment}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
 
+                const data = await response.json();
+
+                // Validate response
+                if (!data || data.error) {
+                    throw new Error(data?.error || 'Invalid API response');
+                }
+
+                if (!data.bestBuy || !data.bestSell) {
+                    throw new Error('داده‌های آربیتراژ ناقص است');
+                }
+
+                // Success state
+                statusDot.className = 'status-dot online';
+                statusText.textContent = `✅ بروزرسانی شد | ${new Date().toLocaleTimeString('fa-IR')}`;
+                calcBtn.classList.remove('loading');
+                calcBtn.textContent = '🔄 بروزرسانی مجدد';
+
+                // Render results
+                renderResults(data);
+
+            } catch (error) {
+                // Error state
+                statusDot.className = 'status-dot offline';
+                statusText.textContent = '❌ خطا در دریافت داده';
+                calcBtn.classList.remove('loading');
+                calcBtn.textContent = '🔄 تلاش مجدد';
+
+                resultDiv.innerHTML = `
+                    <div class="error-card">
+                        <div class="error-icon">🔴</div>
+                        <div class="error-message">${error.message}</div>
+                        <div style="margin-top: 12px; font-size: 12px; color: var(--tg-theme-hint);">
+                            اتصال اینترنت را بررسی کنید
+                        </div>
+                    </div>
+                `;
+
+                console.error('API Error:', error);
+            }
+        }
+
+        // ==================== RENDER RESULTS ====================
+        function renderResults(data) {
+            const resultDiv = document.getElementById('result');
+            const { bestBuy, bestSell, spread, profit, exchanges } = data;
+            
+            const isProfitable = profit.net > 0;
+            const profitClass = isProfitable ? '' : 'profit-negative';
+
+            // Color coding for exchanges
+            const exchangeColors = {
+                'Nobitex': '#3b82f6',
+                'Wallex': '#8b5cf6',
+                'Bitpin': '#f59e0b',
+                'OMPFinex': '#ec4899',
+                'Abantether': '#10b981'
+            };
+
+            let exchangesHTML = '';
+            if (exchanges) {
+                const exchangeNames = Object.keys(exchanges);
+                exchangesHTML = `
+                    <div class="exchanges-section">
+                        <div class="section-subtitle">📊 قیمت‌های لحظه‌ای</div>
+                        ${exchangeNames.map(name => {
+                            const ex = exchanges[name];
+                            const color = exchangeColors[name] || '#94a3b8';
+                            const firstLetter = name.charAt(0);
+                            return `
+                                <div class="exchange-item">
+                                    <div class="exchange-item-left">
+                                        <div class="exchange-item-icon" style="background: ${color}20; color: ${color};">
+                                            ${firstLetter}
+                                        </div>
+                                        <div class="exchange-item-name">${name}</div>
+                                    </div>
+                                    <div class="exchange-item-prices">
+                                        <div class="exchange-item-ask">
+                                            ${ex.ask ? formatNumber(ex.ask) : '---'} 
+                                            <span style="font-size: 10px;">خرید</span>
+                                        </div>
+                                        <div class="exchange-item-bid">
+                                            ${ex.bid ? formatNumber(ex.bid) : '---'} 
+                                            <span style="font-size: 10px;">فروش</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+
+            resultDiv.innerHTML = `
+                <!-- Arbitrage Highlight -->
+                <div class="arbitrage-highlight">
+                    <div class="arbitrage-title">
+                        🎯 بهترین فرصت آربیتراژ
+                    </div>
+                    <div class="arbitrage-grid">
+                        <div class="arb-card-mini buy">
+                            <div class="arb-card-label">🟢 خرید از</div>
+                            <div class="arb-card-exchange">${bestBuy.exchange}</div>
+                            <div class="arb-card-price price-buy">${formatNumber(bestBuy.price)}</div>
+                            <div style="font-size: 11px; color: var(--tg-theme-hint); margin-top: 4px;">
+                                کارمزد: ${(bestBuy.fee * 100).toFixed(2)}%
+                            </div>
+                        </div>
+                        <div class="arb-card-mini sell">
+                            <div class="arb-card-label">🔴 فروش به</div>
+                            <div class="arb-card-exchange">${bestSell.exchange}</div>
+                            <div class="arb-card-price price-sell">${formatNumber(bestSell.price)}</div>
+                            <div style="font-size: 11px; color: var(--tg-theme-hint); margin-top: 4px;">
+                                کارمزد: ${(bestSell.fee * 100).toFixed(2)}%
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Spread -->
+                    <div style="text-align: center; padding: 10px; background: rgba(245, 158, 11, 0.1); border-radius: 10px;">
+                        <span style="font-size: 13px; color: var(--tg-theme-hint);">اختلاف قیمت:</span>
+                        <span style="font-size: 18px; font-weight: 700; color: var(--yellow); margin: 0 8px;">
+                            ${formatNumber(spread.diff)}
+                        </span>
+                        <span style="font-size: 14px; color: var(--yellow);">
+                            (%${spread.diffPct})
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Profit Section -->
+                <div class="profit-section">
+                    <div class="profit-title">
+                        💵 محاسبه سود
+                    </div>
+                    <div class="profit-grid">
+                        <div class="profit-item">
+                            <span class="profit-label">سرمایه</span>
+                            <span class="profit-value">${formatNumber(data.investment)} تومان</span>
+                        </div>
+                        <div class="profit-item">
+                            <span class="profit-label">سود ناخالص</span>
+                            <span class="profit-value" style="color: var(--yellow);">
+                                ${formatNumber(profit.gross)} تومان
+                            </span>
+                        </div>
+                        <div class="profit-item">
+                            <span class="profit-label">مجموع کارمزدها</span>
+                            <span class="profit-value" style="color: var(--red);">
+                                ${formatNumber(profit.fees)} تومان
+                            </span>
+                        </div>
+                        <div class="profit-net ${profitClass}">
+                            <div class="profit-net-label">
+                                ${isProfitable ? '🟢 سود خالص' : '🔴 ضرر خالص'}
+                            </div>
+                            <div class="profit-net-value">
+                                ${formatNumber(Math.abs(profit.net))} تومان
+                            </div>
+                            <div class="profit-net-percent">
+                                ${isProfitable ? '+' : ''}%${profit.netPercent}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exchanges Table -->
+                ${exchangesHTML}
+
+                <!-- Timestamp -->
+                <div style="text-align: center; margin-top: 16px; font-size: 11px; color: var(--tg-theme-hint);">
+                    ⏰ ${new Date().toLocaleTimeString('fa-IR')}
+                </div>
+            `;
+
+            // Scroll to result
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ==================== INIT ====================
+        function init() {
+            // Auto-calculate on load
+            calculate();
+            
+            // Telegram Main Button
+            if (tg?.MainButton) {
+                tg.MainButton.setText('🔄 بروزرسانی');
+                tg.MainButton.show();
+                tg.MainButton.onClick(calculate);
+            }
+        }
+
+        // Start app
+        init();
+    </script>
 </body>
 </html>
