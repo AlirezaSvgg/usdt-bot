@@ -1,100 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>USDT Arbitrage Engine</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>USDT Arbitrage - Live Engine</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Consolas, monospace;
+    background: #0f0f0f;
+    color: #fff;
+    padding: 16px;
+  }
 
-  <style>
-    body {
-      margin: 0;
-      font-family: monospace;
-      background: #0d0d0d;
-      color: #e5e5e5;
-      padding: 16px;
-    }
+  h2 { color: #ffcc00; }
 
-    h2 {
-      color: #00ff88;
-      text-align: center;
-    }
+  input, button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    margin-top: 10px;
+  }
 
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 6px;
-      border: none;
-      font-size: 16px;
-      font-family: monospace;
-    }
+  button {
+    background: #2ecc71;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+  }
 
-    button {
-      background: #00ff88;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-    }
+  pre {
+    background: #1c1c1c;
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-top: 12px;
+  }
 
-    .box {
-      margin-top: 15px;
-      padding: 12px;
-      background: #151515;
-      border-radius: 8px;
-      white-space: pre-wrap;
-      line-height: 1.6;
-    }
-
-    .green { color: #00ff88; }
-    .red { color: #ff4d4d; }
-    .yellow { color: #ffd000; }
-  </style>
+  .green { color: #2ecc71; }
+  .red { color: #ff4d4d; }
+</style>
 </head>
-
 <body>
 
-  <h2>🔍 USDT PRICES - LIVE ENGINE</h2>
+<h2>🔍 USDT PRICES - LIVE ENGINE</h2>
 
-  <input id="inv" type="number" value="20000000"/>
+<input id="inv" type="number" value="20000000" />
+<button onclick="run()">CALCULATE</button>
 
-  <button onclick="run()">CALCULATE</button>
+<pre id="out">Waiting...</pre>
 
-  <div id="out" class="box">Waiting...</div>
+<script>
+const API = "https://usdt-bot.alir3zaww.workers.dev/";
 
-  <script>
-    const API = "https://usdt-bot.alir3zaww.workers.dev/";
+async function run() {
+  const inv = document.getElementById("inv").value;
+  const out = document.getElementById("out");
+  out.textContent = "Loading...";
 
-    async function run() {
-      const inv = document.getElementById("inv").value;
+  try {
+    const res = await fetch(`${API}?investment=${inv}`);
+    const data = await res.json();
 
-      const res = await fetch(API + "?investment=" + inv);
-      const data = await res.json();
+    // نمایش دقیق شبیه CLI
+    out.innerHTML = `
+🔍 USDT PRICES - ${inv} Toman
+============================================================
+${Object.entries(data.exchanges).map(([ex, v]) => {
+      if(!v) return `${ex} | No Data`;
+      return `${ex.padEnd(12)} | ASK (Buy) : ${v.ask.toLocaleString().padStart(10)} Toman | BID (Sell): ${v.bid.toLocaleString().padStart(10)} Toman | Fee: ${(data.bestBuy.exchange===ex ? data.bestBuy.fee : (data.bestSell.exchange===ex ? data.bestSell.fee : 0)).toFixed(3)}%`
+    }).join("\n")}
 
-      let txt = "";
+🟢 Lowest ASK  (Buy USDT)  : ${data.bestBuy.exchange} @ ${data.bestBuy.price.toLocaleString()} Toman (Fee: ${(data.bestBuy.fee*100).toFixed(2)}%)
+🔴 Highest BID (Sell USDT) : ${data.bestSell.exchange} @ ${data.bestSell.price.toLocaleString()} Toman (Fee: ${(data.bestSell.fee*100).toFixed(2)}%)
+💰 Spread: ${data.spread.diff.toLocaleString()} Toman (${data.spread.diffPct.toFixed(2)}%) per USDT
 
-      txt += "==================================================\n";
-      txt += "🔍 USDT PRICES - 5 EXCHANGES\n";
-      txt += "==================================================\n\n";
+💵 PROFIT CALCULATION (Investment: ${inv.toLocaleString()} Toman):
+   Buy  : ${inv.toLocaleString()} Toman → ${(inv*(1-data.bestBuy.fee)/data.bestBuy.price).toFixed(4)} USDT @ ${data.bestBuy.price.toLocaleString()} Toman (Fee: ${(inv*data.bestBuy.fee).toLocaleString()} T)
+   Sell : ${(inv*(1-data.bestBuy.fee)/data.bestBuy.price).toFixed(4)} USDT → ${( ((inv*(1-data.bestBuy.fee)/data.bestBuy.price)*data.bestSell.price) ).toLocaleString()} Toman @ ${data.bestSell.price.toLocaleString()} Toman (Fee: ${(((inv*(1-data.bestBuy.fee)/data.bestBuy.price)*data.bestSell.price)*data.bestSell.fee).toLocaleString()} T)
+   ─────────────────────────────────────────────
+   Gross Profit : ${data.profit.gross.toLocaleString()} Toman
+   Total Fee    : ${data.profit.fees.toLocaleString()} Toman
+   Net Profit   : ${data.profit.net.toLocaleString()} Toman (${data.profit.netPercent.toFixed(2)}%)
 
-      for (let [name, ex] of Object.entries(data.exchanges)) {
-        txt += `${name.padEnd(12)} | ASK: ${ex.ask} | BID: ${ex.bid}\n`;
-      }
-
-      txt += "\n--------------------------------------------------\n";
-      txt += `🟢 Lowest ASK  (BUY)  : ${data.bestBuy.exchange} @ ${data.bestBuy.price}\n`;
-      txt += `🔴 Highest BID (SELL) : ${data.bestSell.exchange} @ ${data.bestSell.price}\n`;
-      txt += `💰 Spread             : ${data.spread.diff} (${data.spread.diffPct?.toFixed(2)}%)\n`;
-
-      txt += "\n==================================================\n";
-      txt += "💵 PROFIT CALCULATION\n";
-      txt += "==================================================\n";
-      txt += `Gross Profit : ${data.profit.gross}\n`;
-      txt += `Total Fees   : ${data.profit.fees}\n`;
-      txt += `Net Profit   : ${data.profit.net} (${data.profit.netPercent.toFixed(3)}%)\n`;
-
-      document.getElementById("out").innerText = txt;
-    }
-  </script>
+⏰ ${new Date().toLocaleTimeString()}
+    `;
+  } catch(e) {
+    out.textContent = "ERROR: " + e.message;
+  }
+}
+</script>
 
 </body>
 </html>
