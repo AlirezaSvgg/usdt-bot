@@ -3,109 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>USDT Mini App</title>
-
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <title>USDT Arbitrage Engine</title>
 
   <style>
     body {
       margin: 0;
-      font-family: Arial;
-      background: #0f0f0f;
-      color: white;
+      font-family: monospace;
+      background: #0d0d0d;
+      color: #e5e5e5;
       padding: 16px;
     }
 
-    .card {
-      background: #1c1c1c;
-      padding: 12px;
-      border-radius: 10px;
-      margin-top: 10px;
+    h2 {
+      color: #00ff88;
+      text-align: center;
     }
 
     input, button {
       width: 100%;
       padding: 12px;
       margin-top: 10px;
-      border-radius: 8px;
+      border-radius: 6px;
       border: none;
       font-size: 16px;
+      font-family: monospace;
     }
 
     button {
-      background: #2ecc71;
+      background: #00ff88;
+      color: black;
       font-weight: bold;
+      cursor: pointer;
     }
 
-    .row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 6px;
+    .box {
+      margin-top: 15px;
+      padding: 12px;
+      background: #151515;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      line-height: 1.6;
     }
 
-    .green { color: #2ecc71; }
+    .green { color: #00ff88; }
     .red { color: #ff4d4d; }
+    .yellow { color: #ffd000; }
   </style>
 </head>
 
 <body>
 
-  <h2>USDT Arbitrage</h2>
+  <h2>🔍 USDT PRICES - LIVE ENGINE</h2>
 
-  <input id="inv" type="number" value="20000000" />
+  <input id="inv" type="number" value="20000000"/>
 
-  <button onclick="calc()">Calculate</button>
+  <button onclick="run()">CALCULATE</button>
 
-  <div id="out"></div>
+  <div id="out" class="box">Waiting...</div>
 
   <script>
     const API = "https://usdt-bot.alir3zaww.workers.dev/";
 
-    async function calc() {
-      try {
-        const inv = document.getElementById("inv").value;
+    async function run() {
+      const inv = document.getElementById("inv").value;
 
-        const res = await fetch(API + "?investment=" + inv);
-        const data = await res.json();
+      const res = await fetch(API + "?investment=" + inv);
+      const data = await res.json();
 
-        document.getElementById("out").innerHTML = `
-          <div class="card">
-            <div class="row">
-              <span>Best Buy</span>
-              <span class="green">${data.bestBuy.exchange} @ ${data.bestBuy.price}</span>
-            </div>
+      let txt = "";
 
-            <div class="row">
-              <span>Best Sell</span>
-              <span class="red">${data.bestSell.exchange} @ ${data.bestSell.price}</span>
-            </div>
+      txt += "==================================================\n";
+      txt += "🔍 USDT PRICES - 5 EXCHANGES\n";
+      txt += "==================================================\n\n";
 
-            <div class="row">
-              <span>Gross</span>
-              <span>${data.profit.gross.toFixed(0)}</span>
-            </div>
-
-            <div class="row">
-              <span>Fees</span>
-              <span>${data.profit.fees.toFixed(0)}</span>
-            </div>
-
-            <div class="row">
-              <span>Net</span>
-              <span class="green">${data.profit.net.toFixed(0)}</span>
-            </div>
-
-            <div class="row">
-              <span>ROI</span>
-              <span class="green">${data.profit.netPercent.toFixed(3)}%</span>
-            </div>
-          </div>
-        `;
-      } catch (e) {
-        document.getElementById("out").innerHTML =
-          "<div class='card'>Error loading data</div>";
-        console.log(e);
+      for (let [name, ex] of Object.entries(data.exchanges)) {
+        txt += `${name.padEnd(12)} | ASK: ${ex.ask} | BID: ${ex.bid}\n`;
       }
+
+      txt += "\n--------------------------------------------------\n";
+      txt += `🟢 Lowest ASK  (BUY)  : ${data.bestBuy.exchange} @ ${data.bestBuy.price}\n`;
+      txt += `🔴 Highest BID (SELL) : ${data.bestSell.exchange} @ ${data.bestSell.price}\n`;
+      txt += `💰 Spread             : ${data.spread.diff} (${data.spread.diffPct?.toFixed(2)}%)\n`;
+
+      txt += "\n==================================================\n";
+      txt += "💵 PROFIT CALCULATION\n";
+      txt += "==================================================\n";
+      txt += `Gross Profit : ${data.profit.gross}\n`;
+      txt += `Total Fees   : ${data.profit.fees}\n`;
+      txt += `Net Profit   : ${data.profit.net} (${data.profit.netPercent.toFixed(3)}%)\n`;
+
+      document.getElementById("out").innerText = txt;
     }
   </script>
 
