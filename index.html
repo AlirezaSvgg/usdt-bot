@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>USDT Arbitrage</title>
+  <title>USDT Mini App</title>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
@@ -23,24 +23,17 @@
       margin-top: 10px;
     }
 
-    input {
+    input, button {
       width: 100%;
       padding: 12px;
+      margin-top: 10px;
       border-radius: 8px;
       border: none;
-      margin-top: 10px;
       font-size: 16px;
     }
 
     button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
       background: #2ecc71;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      color: black;
       font-weight: bold;
     }
 
@@ -69,44 +62,50 @@
     const API = "https://usdt-bot.alir3zaww.workers.dev/";
 
     async function calc() {
-      const inv = document.getElementById("inv").value;
+      try {
+        const inv = document.getElementById("inv").value;
 
-      const res = await fetch(`${API}?investment=${inv}`);
-      const data = await res.json();
+        const res = await fetch(API + "?investment=" + inv);
+        const data = await res.json();
 
-      document.getElementById("out").innerHTML = `
-        <div class="card">
-          <div class="row">
-            <span>Best Buy</span>
-            <span class="green">${data.bestBuy.exchange} @ ${data.bestBuy.price}</span>
+        document.getElementById("out").innerHTML = `
+          <div class="card">
+            <div class="row">
+              <span>Best Buy</span>
+              <span class="green">${data.bestBuy.exchange} @ ${data.bestBuy.price}</span>
+            </div>
+
+            <div class="row">
+              <span>Best Sell</span>
+              <span class="red">${data.bestSell.exchange} @ ${data.bestSell.price}</span>
+            </div>
+
+            <div class="row">
+              <span>Gross</span>
+              <span>${data.profit.gross.toFixed(0)}</span>
+            </div>
+
+            <div class="row">
+              <span>Fees</span>
+              <span>${data.profit.fees.toFixed(0)}</span>
+            </div>
+
+            <div class="row">
+              <span>Net</span>
+              <span class="green">${data.profit.net.toFixed(0)}</span>
+            </div>
+
+            <div class="row">
+              <span>ROI</span>
+              <span class="green">${data.profit.netPercent.toFixed(3)}%</span>
+            </div>
           </div>
-
-          <div class="row">
-            <span>Best Sell</span>
-            <span class="red">${data.bestSell.exchange} @ ${data.bestSell.price}</span>
-          </div>
-
-          <div class="row">
-            <span>Gross</span>
-            <span>${data.profit.gross.toFixed(0)}</span>
-          </div>
-
-          <div class="row">
-            <span>Fees</span>
-            <span>${data.profit.fees.toFixed(0)}</span>
-          </div>
-
-          <div class="row">
-            <span>Net Profit</span>
-            <span class="green">${data.profit.net.toFixed(0)}</span>
-          </div>
-
-          <div class="row">
-            <span>ROI</span>
-            <span class="green">${data.profit.netPercent.toFixed(3)}%</span>
-          </div>
-        </div>
-      `;
+        `;
+      } catch (e) {
+        document.getElementById("out").innerHTML =
+          "<div class='card'>Error loading data</div>";
+        console.log(e);
+      }
     }
   </script>
 
