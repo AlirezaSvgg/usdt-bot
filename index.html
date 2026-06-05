@@ -1,80 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>USDT Arbitrage</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     body {
-      background: #0f0f0f;
-      color: #fff;
+      margin: 0;
       font-family: Arial;
-      text-align: center;
-      padding: 20px;
+      background: #0f0f0f;
+      color: white;
+      padding: 16px;
     }
 
-    input, button {
-      padding: 10px;
-      margin: 10px;
+    .card {
+      background: #1c1c1c;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 10px;
       font-size: 16px;
     }
 
-    .box {
-      margin-top: 20px;
-      padding: 15px;
-      background: #1c1c1c;
-      border-radius: 10px;
-      display: inline-block;
-      text-align: left;
-      min-width: 350px;
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: #2ecc71;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      color: black;
+      font-weight: bold;
     }
 
-    .good { color: #00ff88; }
-    .bad { color: #ff4d4d; }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+    }
+
+    .green { color: #2ecc71; }
+    .red { color: #ff4d4d; }
   </style>
 </head>
 
 <body>
 
-  <h2>🔍 USDT Arbitrage Monitor</h2>
+  <h2>USDT Arbitrage</h2>
 
-  <input id="inv" value="20000000" />
-  <button onclick="loadData()">Check</button>
+  <input id="inv" type="number" value="20000000" />
 
-  <div class="box" id="out">Loading...</div>
+  <button onclick="calc()">Calculate</button>
+
+  <div id="out"></div>
 
   <script>
-    async function loadData(){
+    const API = "https://usdt-bot.alir3zaww.workers.dev/";
 
-      const inv = Number(document.getElementById("inv").value);
+    async function calc() {
+      const inv = document.getElementById("inv").value;
 
-      const res = await fetch("http://localhost:3000/all");
+      const res = await fetch(`${API}?investment=${inv}`);
       const data = await res.json();
 
-      if(!data){
-        document.getElementById("out").innerHTML = "No data";
-        return;
-      }
-
-      const list = Object.entries(data);
-
-      const minAsk = list.reduce((a,b)=> a[1].best_ask < b[1].best_ask ? a : b);
-      const maxBid = list.reduce((a,b)=> a[1].best_bid > b[1].best_bid ? a : b);
-
-      const spread = maxBid[1].best_bid - minAsk[1].best_ask;
-      const profit = (inv / minAsk[1].best_ask) * spread;
-
       document.getElementById("out").innerHTML = `
-        <p>🟢 Buy: <b>${minAsk[0]}</b> @ ${minAsk[1].best_ask}</p>
-        <p>🔴 Sell: <b>${maxBid[0]}</b> @ ${maxBid[1].best_bid}</p>
+        <div class="card">
+          <div class="row">
+            <span>Best Buy</span>
+            <span class="green">${data.bestBuy.exchange} @ ${data.bestBuy.price}</span>
+          </div>
 
-        <hr>
+          <div class="row">
+            <span>Best Sell</span>
+            <span class="red">${data.bestSell.exchange} @ ${data.bestSell.price}</span>
+          </div>
 
-        <p class="good">Spread: ${spread.toFixed(2)}</p>
-        <p class="good">Estimated Profit: ${profit.toFixed(0)} Toman</p>
+          <div class="row">
+            <span>Gross</span>
+            <span>${data.profit.gross.toFixed(0)}</span>
+          </div>
+
+          <div class="row">
+            <span>Fees</span>
+            <span>${data.profit.fees.toFixed(0)}</span>
+          </div>
+
+          <div class="row">
+            <span>Net Profit</span>
+            <span class="green">${data.profit.net.toFixed(0)}</span>
+          </div>
+
+          <div class="row">
+            <span>ROI</span>
+            <span class="green">${data.profit.netPercent.toFixed(3)}%</span>
+          </div>
+        </div>
       `;
     }
-
-    loadData();
   </script>
 
 </body>
