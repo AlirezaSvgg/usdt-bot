@@ -30,9 +30,10 @@
             padding-bottom: 40px;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
+            overflow-x: hidden;
         }
 
-        .container { max-width: 480px; margin: 0 auto; }
+        .container { max-width: 480px; margin: 0 auto; width: 100%; }
 
         /* Header */
         .header {
@@ -87,6 +88,7 @@
             margin-bottom: 10px;
             border: 1px solid var(--border);
             backdrop-filter: blur(10px);
+            overflow: hidden;
         }
 
         .card-label {
@@ -108,8 +110,9 @@
 
         .input-row input {
             flex: 1;
+            min-width: 0;
             padding: 16px;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
             border-radius: 14px;
             border: 2px solid var(--border);
@@ -127,14 +130,15 @@
         }
 
         .currency {
-            padding: 14px 18px;
+            padding: 14px 12px;
             background: var(--bg);
             border-radius: 14px;
             border: 2px solid var(--border);
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             color: var(--hint);
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .quick-amounts {
@@ -237,6 +241,7 @@
             padding: 20px;
             margin-bottom: 10px;
             animation: slideIn 0.4s ease;
+            overflow: hidden;
         }
 
         @keyframes slideIn {
@@ -265,6 +270,7 @@
             border-radius: 14px;
             text-align: center;
             transition: transform 0.3s;
+            overflow: hidden;
         }
 
         .arb-mini.buy {
@@ -333,6 +339,7 @@
             padding: 20px;
             border: 1px solid var(--border);
             margin-bottom: 10px;
+            overflow: hidden;
         }
 
         .profit-title {
@@ -355,7 +362,7 @@
         .profit-row:last-of-type { border-bottom: none; }
 
         .profit-label { font-size: 13px; color: var(--hint); }
-        .profit-value { font-weight: 600; font-size: 14px; }
+        .profit-value { font-weight: 600; font-size: 14px; white-space: nowrap; }
 
         .profit-highlight {
             margin-top: 14px;
@@ -363,6 +370,7 @@
             border-radius: 16px;
             text-align: center;
             animation: popIn 0.5s ease;
+            overflow: hidden;
         }
 
         @keyframes popIn {
@@ -387,7 +395,7 @@
         }
 
         .profit-highlight-value {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 900;
             letter-spacing: -1px;
         }
@@ -419,12 +427,15 @@
             border-radius: 14px;
             margin-bottom: 6px;
             border: 1px solid var(--border);
+            overflow: hidden;
         }
 
         .ex-left {
             display: flex;
             align-items: center;
             gap: 10px;
+            min-width: 0;
+            flex: 1;
         }
 
         .ex-icon {
@@ -437,16 +448,19 @@
             font-weight: 800;
             font-size: 14px;
             color: white;
+            flex-shrink: 0;
         }
 
         .ex-name {
             font-weight: 600;
             font-size: 14px;
+            white-space: nowrap;
         }
 
         .ex-prices {
             text-align: left;
             direction: ltr;
+            flex-shrink: 0;
         }
 
         .ex-bid {
@@ -532,6 +546,22 @@
             font-size: 11px;
             color: var(--hint);
         }
+
+        /* Responsive */
+        @media (max-width: 380px) {
+            body { padding: 8px; }
+            .card { padding: 16px; }
+            .input-row input {
+                font-size: 16px;
+                padding: 12px 8px;
+            }
+            .currency {
+                font-size: 11px;
+                padding: 12px 8px;
+            }
+            .arb-mini-price { font-size: 16px; }
+            .profit-highlight-value { font-size: 24px; }
+        }
     </style>
 </head>
 <body>
@@ -588,7 +618,6 @@
         // ==================== CONFIG ====================
         const API_URL = "https://usdt-bot.alir3zaww.workers.dev/";
         
-        // Exchange colors
         const EXCHANGE_COLORS = {
             'Nobitex': '#3b82f6',
             'Wallex': '#8b5cf6',
@@ -723,7 +752,7 @@
         function renderResult(data) {
             const { bestBuy, bestSell, profit, exchanges, investment } = data;
             
-            // Calculate spread (since API might not include it)
+            // Calculate spread
             const spreadDiff = bestSell.price - bestBuy.price;
             const spreadPct = ((spreadDiff / bestBuy.price) * 100).toFixed(2);
             
@@ -734,8 +763,6 @@
                 exchangesHTML = Object.entries(exchanges).map(([name, ex]) => {
                     const color = EXCHANGE_COLORS[name] || '#94a3b8';
                     const firstLetter = name.charAt(0);
-                    const fee = data.bestBuy.exchange === name ? data.bestBuy.fee : 
-                               data.bestSell.exchange === name ? data.bestSell.fee : 0;
                     
                     return `
                         <div class="exchange-item">
@@ -820,7 +847,7 @@
                 </div>
             `;
 
-            // Scroll to top of result
+            // Scroll to result
             document.querySelector('.arbitrage-banner')?.scrollIntoView({ 
                 behavior: 'smooth', 
                 block: 'start' 
