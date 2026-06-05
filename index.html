@@ -1,94 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>USDT Arbitrage - Live Engine</title>
-<style>
-  body {
-    margin: 0;
-    font-family: Consolas, monospace;
-    background: #0f0f0f;
-    color: #fff;
-    padding: 16px;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>USDT Arbitrage Mini App</title>
 
-  h2 { color: #ffcc00; }
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0f0f0f;
+      color: #fff;
+      padding: 16px;
+    }
 
-  input, button {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    font-size: 16px;
-    margin-top: 10px;
-  }
+    .card {
+      background: #1c1c1c;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
 
-  button {
-    background: #2ecc71;
-    color: black;
-    font-weight: bold;
-    cursor: pointer;
-  }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
 
-  pre {
-    background: #1c1c1c;
-    padding: 12px;
-    border-radius: 8px;
-    overflow-x: auto;
-    margin-top: 12px;
-  }
+    button {
+      background: #2ecc71;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-  .green { color: #2ecc71; }
-  .red { color: #ff4d4d; }
-</style>
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+    }
+
+    .green { color: #2ecc71; }
+    .red { color: #ff4d4d; }
+    .muted { color: #aaa; }
+  </style>
 </head>
+
 <body>
 
-<h2>🔍 USDT PRICES - LIVE ENGINE</h2>
+<h2>🔍 USDT Arbitrage</h2>
 
-<input id="inv" type="number" value="20000000" />
-<button onclick="run()">CALCULATE</button>
+<input id="inv" type="number" value="20000000">
+<button onclick="calc()">CALCULATE</button>
 
-<pre id="out">Waiting...</pre>
+<div id="out" class="card">
+  <div class="muted">Waiting...</div>
+</div>
 
 <script>
 const API = "https://usdt-bot.alir3zaww.workers.dev/";
 
-async function run() {
-  const inv = document.getElementById("inv").value;
+async function calc() {
   const out = document.getElementById("out");
-  out.textContent = "Loading...";
+  const inv = document.getElementById("inv").value;
+
+  out.innerHTML = `<div class="muted">Loading...</div>`;
 
   try {
     const res = await fetch(`${API}?investment=${inv}`);
     const data = await res.json();
 
-    // نمایش دقیق شبیه CLI
+    if (!data.bestBuy || !data.bestSell || !data.profit) {
+      out.innerHTML = `<div class="red">Invalid API response</div>`;
+      return;
+    }
+
     out.innerHTML = `
-🔍 USDT PRICES - ${inv} Toman
-============================================================
-${Object.entries(data.exchanges).map(([ex, v]) => {
-      if(!v) return `${ex} | No Data`;
-      return `${ex.padEnd(12)} | ASK (Buy) : ${v.ask.toLocaleString().padStart(10)} Toman | BID (Sell): ${v.bid.toLocaleString().padStart(10)} Toman | Fee: ${(data.bestBuy.exchange===ex ? data.bestBuy.fee : (data.bestSell.exchange===ex ? data.bestSell.fee : 0)).toFixed(3)}%`
-    }).join("\n")}
+      <div class="row">
+        <span>Best Buy</span>
+        <span class="green">${data.bestBuy.exchange} @ ${data.bestBuy.price}</span>
+      </div>
 
-🟢 Lowest ASK  (Buy USDT)  : ${data.bestBuy.exchange} @ ${data.bestBuy.price.toLocaleString()} Toman (Fee: ${(data.bestBuy.fee*100).toFixed(2)}%)
-🔴 Highest BID (Sell USDT) : ${data.bestSell.exchange} @ ${data.bestSell.price.toLocaleString()} Toman (Fee: ${(data.bestSell.fee*100).toFixed(2)}%)
-💰 Spread: ${data.spread.diff.toLocaleString()} Toman (${data.spread.diffPct.toFixed(2)}%) per USDT
+      <div class="row">
+        <span>Best Sell</span>
+        <span class="red">${data.bestSell.exchange} @ ${data.bestSell.price}</span>
+      </div>
 
-💵 PROFIT CALCULATION (Investment: ${inv.toLocaleString()} Toman):
-   Buy  : ${inv.toLocaleString()} Toman → ${(inv*(1-data.bestBuy.fee)/data.bestBuy.price).toFixed(4)} USDT @ ${data.bestBuy.price.toLocaleString()} Toman (Fee: ${(inv*data.bestBuy.fee).toLocaleString()} T)
-   Sell : ${(inv*(1-data.bestBuy.fee)/data.bestBuy.price).toFixed(4)} USDT → ${( ((inv*(1-data.bestBuy.fee)/data.bestBuy.price)*data.bestSell.price) ).toLocaleString()} Toman @ ${data.bestSell.price.toLocaleString()} Toman (Fee: ${(((inv*(1-data.bestBuy.fee)/data.bestBuy.price)*data.bestSell.price)*data.bestSell.fee).toLocaleString()} T)
-   ─────────────────────────────────────────────
-   Gross Profit : ${data.profit.gross.toLocaleString()} Toman
-   Total Fee    : ${data.profit.fees.toLocaleString()} Toman
-   Net Profit   : ${data.profit.net.toLocaleString()} Toman (${data.profit.netPercent.toFixed(2)}%)
+      <div class="row">
+        <span>Spread</span>
+        <span>${data.spread.diff} (${data.spread.diffPct.toFixed(2)}%)</span>
+      </div>
 
-⏰ ${new Date().toLocaleTimeString()}
+      <div class="row">
+        <span>Gross</span>
+        <span>${Math.round(data.profit.gross)}</span>
+      </div>
+
+      <div class="row">
+        <span>Fees</span>
+        <span>${Math.round(data.profit.fees)}</span>
+      </div>
+
+      <div class="row">
+        <span class="green">Net Profit</span>
+        <span class="green">${Math.round(data.profit.net)}</span>
+      </div>
+
+      <div class="row">
+        <span>ROI</span>
+        <span class="green">${data.profit.netPercent.toFixed(3)}%</span>
+      </div>
     `;
-  } catch(e) {
-    out.textContent = "ERROR: " + e.message;
+
+  } catch (e) {
+    out.innerHTML = `<div class="red">Fetch Error</div>`;
   }
 }
 </script>
